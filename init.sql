@@ -1,4 +1,4 @@
-CREATE TABLE covid (
+CREATE TABLE covid.covid (
   report_date DATE,
   city VARCHAR(80),
   province_state VARCHAR(50),
@@ -14,12 +14,12 @@ CREATE TABLE covid (
   PRIMARY KEY(report_date, city, province_state, country)
 );
 
-CREATE INDEX report_date_idx on covid (report_date);
-CREATE INDEX city_idx on covid (city);
-CREATE INDEX province_state_idx on covid (province_state);
-CREATE INDEX country_idx on covid (country);
+CREATE INDEX report_date_idx on covid.covid (report_date);
+CREATE INDEX city_idx on covid.covid (city);
+CREATE INDEX province_state_idx on covid.covid (province_state);
+CREATE INDEX country_idx on covid.covid (country);
 
-CREATE TABLE covid_region (
+CREATE TABLE covid.covid_region (
   day DATE,
   region VARCHAR(80),
   cases INT,
@@ -29,6 +29,6 @@ CREATE TABLE covid_region (
   PRIMARY KEY(day, region)
 );
 
-CREATE INDEX day_idx on covid_region (day);
-CREATE INDEX region_idx on covid_region (region);
+CREATE INDEX day_idx on covid.covid_region (day);
+CREATE INDEX region_idx on covid.covid_region (region);
 
