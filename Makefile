@@ -1,9 +1,9 @@
 install:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 
 run:
-	python scraper.py
-	python study.py
+	python3 scraper.py
+	python3 study.py
 
 init_db:
 	mysql -u root -p -D covid < init.sql

@@ -1,3 +1,5 @@
+CREATE DATABASE covid;
+
 CREATE TABLE covid.covid (
   report_date DATE,
   city VARCHAR(80),
