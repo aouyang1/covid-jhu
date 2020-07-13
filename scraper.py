@@ -1,8 +1,7 @@
 from datetime import datetime
 from datetime import timedelta
 import io
-import socket
-import time
+import os
 
 from sqlalchemy import create_engine
 import pandas as pd
@@ -10,7 +9,7 @@ import requests
 
 def init_sql_conn():
     user = "root"
-    host = socket.gethostname()
+    host = os.getenv('MYSQL_HOST')
     db = "covid"
     engine = create_engine(f'mysql://{user}@{host}/{db}')
     conn = engine.connect()
@@ -109,16 +108,14 @@ def scrape_from(conn, start_date, end_date=datetime.now().date()):
     df_all["daily_active"] =  df_grouped["active"].diff()
 
     try:
-        df_all.to_sql(con=conn, name=table, if_exists="append", index=False)
+        df_all.to_sql(con=conn, name=table, if_exists="replace", index=False)
     except ValueError as err:
         print(f'{err} for {date}')
     except Exception as err:
         print(f'Unknown exception{err} for {date}')
 
 if __name__ == "__main__":
-    start_date = datetime(2020, 7, 10).date()
+    start_date = datetime(2020, 3, 22).date()
     conn = init_sql_conn()
-    while True:
-        scrape_from(conn, start_date)
-        time.sleep(60*60)
+    scrape_from(conn, start_date)
     conn.close()
