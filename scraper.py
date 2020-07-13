@@ -1,7 +1,8 @@
 from datetime import datetime
 from datetime import timedelta
 import io
-import os
+import socket
+import time
 
 from sqlalchemy import create_engine
 import pandas as pd
@@ -9,12 +10,9 @@ import requests
 
 def init_sql_conn():
     user = "root"
-    if "MYSQL_PASSWORD" not in os.environ:
-        raise Exception("Must provide MYSQL_PASSWORD environment variable to connect")
-    pwd = os.environ["MYSQL_PASSWORD"]
-    host = "localhost"
+    host = socket.gethostname()
     db = "covid"
-    engine = create_engine(f'mysql://{user}:{pwd}@{host}/{db}')
+    engine = create_engine(f'mysql://{user}@{host}/{db}')
     conn = engine.connect()
     return conn
 
@@ -111,14 +109,16 @@ def scrape_from(conn, start_date, end_date=datetime.now().date()):
     df_all["daily_active"] =  df_grouped["active"].diff()
 
     try:
-        df_all.to_sql(con=conn, name=table, if_exists="replace", index=False)
+        df_all.to_sql(con=conn, name=table, if_exists="append", index=False)
     except ValueError as err:
         print(f'{err} for {date}')
     except Exception as err:
         print(f'Unknown exception{err} for {date}')
 
 if __name__ == "__main__":
-    start_date = datetime(2020, 3, 22).date()
+    start_date = datetime(2020, 7, 10).date()
     conn = init_sql_conn()
-    scrape_from(conn, start_date)
+    while True:
+        scrape_from(conn, start_date)
+        time.sleep(60*60)
     conn.close()
